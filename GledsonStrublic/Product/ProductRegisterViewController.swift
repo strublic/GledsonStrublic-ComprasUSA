@@ -26,7 +26,7 @@ class ProductRegisterViewController: UIViewController {
         super.viewDidLoad()
         if product != nil {
             tfTitle.text = product.title
-            tfPrice.text = "(product.price)"
+            tfPrice.text = "\(product.price)"
             btAddUpdate.setTitle("Atualizar", for: .normal)
             if let image = product.picture as? UIImage {
                 ivPicture.image = image

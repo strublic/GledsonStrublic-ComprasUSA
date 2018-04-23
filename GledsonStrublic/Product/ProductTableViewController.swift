@@ -14,7 +14,6 @@ class ProductsTableViewController: UITableViewController {
     
     var label = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 22))
     var fetchedResultController: NSFetchedResultsController<Product>!
-//    let dataArray = ["IOS", "Android", "Rasp", "Blender"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,8 +21,7 @@ class ProductsTableViewController: UITableViewController {
         tableView.rowHeight = UITableViewAutomaticDimension
         label.text = "Sua lista está vazia!"
         label.textAlignment = .center
-        label.textColor = .white
-        
+        label.textColor = .darkGray
         loadProducts()
     }
 //    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -73,6 +71,7 @@ class ProductsTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if let count = fetchedResultController.fetchedObjects?.count {
             tableView.backgroundView = (count == 0) ? label : nil
+            tableView.separatorStyle = .none
             return count
         } else {
             tableView.backgroundView = label

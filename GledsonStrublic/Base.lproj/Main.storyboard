@@ -265,6 +265,9 @@
                                 <rect key="frame" x="244" y="578" width="115" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Adicionar estado"/>
+                                <connections>
+                                    <action selector="addState:" destination="b6r-7I-Vcj" eventType="touchUpInside" id="RMG-oi-I1R"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="IOF (%):" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Th6-8W-jRD">
                                 <rect key="frame" x="20" y="143" width="174" height="21"/>
@@ -300,6 +303,9 @@
                         <viewLayoutGuide key="safeArea" id="v4t-oe-JBG"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Ajustes" image="Icon-settings" selectedImage="Icon-settings" id="SZM-vF-1yB"/>
+                    <connections>
+                        <outlet property="tableView" destination="WHw-7H-2oo" id="lsd-yp-HLA"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Pzr-Vf-hrG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
