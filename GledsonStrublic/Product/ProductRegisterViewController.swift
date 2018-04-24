@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import CoreData
 
 class ProductRegisterViewController: UIViewController {
     // MARK: - IBOutlets
@@ -21,6 +22,10 @@ class ProductRegisterViewController: UIViewController {
     var product: Product!
     var smallImage: UIImage!
 
+    var pickerView: UIPickerView!
+    var fetchedResultController: NSFetchedResultsController<State>!
+    var dataSource: [String]!
+    
     // MARK:  Super Methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,23 +37,50 @@ class ProductRegisterViewController: UIViewController {
                 ivPicture.image = image
             }
         }
+        
+        pickerView = UIPickerView()
+        pickerView.backgroundColor = .white
+        pickerView.delegate = self
+        pickerView.dataSource = self
+        
+        let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: 44))
+        let btCancel = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel))
+        let btSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let btDone = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(done))
+        toolbar.items = [btCancel, btSpace, btDone]
+        
+        tfState.inputAccessoryView = toolbar
+        tfState.inputView = pickerView
+        
+        loadStates()
+    }
+    
+    func loadStates() {
+        let fetchRequest: NSFetchRequest<State> = State.fetchRequest()
+        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+        
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        fetchedResultController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+        fetchedResultController.delegate = self
+        do {
+            try fetchedResultController.performFetch()
+            dataSource = fetchedResultController.fetchedObjects?.map({$0.title!})
+        } catch {
+            print(error.localizedDescription)
+        }
+        
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if product != nil {
-            if let states = product.states {
-                tfState.text = states.map({($0 as! State).title!}).joined(separator: " | ")
-            }
-        }
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if product == nil {
-            product = Product(context: context)
-        }
-        let vc = segue.destination as! StatesViewController
-        vc.product = product
+//        if product == nil {
+//            product = Product(context: context)
+//        }
+//        let vc = segue.destination
+//        vc.product = product
     }
 
     // MARK: - IBActions
@@ -121,6 +153,23 @@ class ProductRegisterViewController: UIViewController {
         //Apresentamos a imagePicker ao usuário
         present(imagePicker, animated: true, completion: nil)
     }
+    
+    //O método cancel irá esconder o teclado e não irá atribuir a seleção ao textField
+    @objc func cancel() {
+        
+        //O método resignFirstResponder() faz com que o campo deixe de ter o foco, fazendo assim
+        //com que o teclado (pickerView) desapareça da tela
+        tfState.resignFirstResponder()
+    }
+    
+    //O método done irá atribuir ao textField a escolhe feita no pickerView
+    @objc func done() {
+        
+        //Abaixo, recuperamos a linha selecionada na coluna (component) 0 (temos apenas um component
+        //em nosso pickerView)
+        tfState.text = dataSource[pickerView.selectedRow(inComponent: 0)]
+        cancel()
+    }
 }
 
 // MARK: - UIImagePickerControllerDelegate
@@ -142,5 +191,28 @@ extension ProductRegisterViewController: UIImagePickerControllerDelegate, UINavi
         
         //Aqui efetuamos o dismiss na UIImagePickerController, para retornar à tela anterior
         dismiss(animated: true, completion: nil)
+    }
+}
+extension ProductRegisterViewController: UIPickerViewDelegate {
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return dataSource[row]
+    }
+}
+
+extension ProductRegisterViewController: UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return dataSource.count
+    }
+}
+
+// MARK: - NSFetchedResultsControllerDelegate
+extension ProductRegisterViewController: NSFetchedResultsControllerDelegate {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        dataSource = fetchedResultController.fetchedObjects?.map({$0.title!})
+        pickerView.reloadComponent(0)
     }
 }

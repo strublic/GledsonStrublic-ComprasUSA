@@ -9,75 +9,164 @@
 import UIKit
 import CoreData
 
-enum StateType {
-    case add
-    case edit
+enum CategoryType {
+    case add, edit
 }
 
 class StatesViewController: UIViewController {
     
     // MARK: - IBOutlets
     
+    @IBOutlet weak var tfDolar: UITextField!
+    @IBOutlet weak var tfIOF: UITextField!
     @IBOutlet weak var tableView: UITableView!
     
-    var label = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 22))
+    let tableCellIdentifier = "stateCell"
     var fetchedResultController: NSFetchedResultsController<State>!
+    var label: UILabel!
+    var state: State!
+    var alert: UIAlertController!
     
-    // MARK: - Properties
-    var dataSource: [State] = []
-    var product: Product!
+//    var label = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 22))
+//    var fetchedResultController: NSFetchedResultsController<State>!
+//    var dataSource: [State] = []
+//    var product: Product!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        loadStates()
-//        tableView.delegate = self
-//        tableView.dataSource = self
+        //tableView.register(StateItemTableViewCell.self, forCellReuseIdentifier: tableCellIdentifier)
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.estimatedRowHeight = 106
-        tableView.rowHeight = UITableViewAutomaticDimension
+        
+        label = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 22))
         label.text = "Lista de estados vazia."
         label.textAlignment = .center
-        label.textColor = .darkGray
+        
         loadStates()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        tfDolar.text = String(format : "%.2f" ,UserDefaults.standard.double(forKey: "dolar"))
+        tfIOF.text = String(format: "%.2f", UserDefaults.standard.double(forKey: "iof"))
+    }
+    
+    @IBAction func dollarChanged(_ sender: UITextField) {
+        if let value = tfDolar.text, let dValue = Double(value), dValue > 0 {
+            UserDefaults.standard.set(dValue, forKey: "dolar")
+        }
+    }
+    
+    @IBAction func iofChanged(_ sender: UITextField) {
+        if let value = tfIOF.text, let dValue = Double(value), dValue >= 0 {
+            UserDefaults.standard.set(dValue, forKey: "iof")
+        }
     }
     
     // MARK: - Methods
     func loadStates() {
-        let fetchRequest: NSFetchRequest<State> = State.fetchRequest()
+        let fetchedRequest: NSFetchRequest<State> = State.fetchRequest()
         let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
-        fetchRequest.sortDescriptors = [sortDescriptor]
-//        fetchedResultController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
-//        fetchedResultController.delegate = self as? NSFetchedResultsControllerDelegate
+        fetchedRequest.sortDescriptors = [sortDescriptor]
+        fetchedResultController = NSFetchedResultsController(fetchRequest: fetchedRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+        
+        fetchedResultController.delegate = self
         
         do {
-            dataSource = try context.fetch(fetchRequest)
-            tableView.reloadData()
+            try fetchedResultController.performFetch()
         } catch {
             print(error.localizedDescription)
         }
     }
     
-    func showAlert(type: StateType, state: State?) {
-        let title = (type == .add) ? "Adicionar" : "Editar"
-        let alert = UIAlertController(title: "\(title) Estado", message: nil, preferredStyle: .alert)
-        alert.addTextField { (textField: UITextField) in
-            textField.placeholder = "Nome do Estado"
-            if let name = state?.title {
-                textField.text = name
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    @objc func stateTextChange(sender: UITextField)
+    {
+        var allValid = true
+        
+        if let fields = alert.textFields {
+            for field in fields {
+                if let placeHolder = field.placeholder {
+                    if placeHolder.range(of: "Nome") != nil {
+                        
+                        if let text = field.text, text.count > 1 {
+                            
+                            allValid = allValid && true
+                            
+                        } else {
+                            
+                            allValid = false
+                            
+                        }
+                    } else if placeHolder.range(of: "Imposto") != nil {
+                        
+                        if let text = field.text, let dValue = Double(text), dValue >= 0.0 {
+                            
+                            allValid = allValid && true
+                            
+                        } else {
+                            
+                            allValid = false
+                            
+                        }
+                    }
+                }
             }
         }
         
-        alert.addTextField { (textField2: UITextField) in
-            textField2.placeholder = "Imposto"
+        if let okButton = alert.actions.first {
+            okButton.isEnabled = allValid
+        }
+    }
+    
+    func showDialog(type: CategoryType, state: State? )
+    {
+        let title = (type == .add) ? "Adicionar" : "Editar"
+        alert = UIAlertController(title: "\(title) estado", message: nil, preferredStyle: .alert)
+        
+        alert.addTextField { (textField: UITextField) in
+            textField.placeholder = "Nome do estado"
+            textField.addTarget(self, action: #selector(self.stateTextChange), for: .editingChanged)
+            if let title = state?.title {
+                textField.text = title
+            }
+        }
+        alert.addTextField { (textField: UITextField) in
+            textField.placeholder = "Imposto"
+            textField.addTarget(self, action: #selector(self.stateTextChange), for: .editingChanged)
+            textField.keyboardType = .decimalPad
             if let tax = state?.tax {
-                textField2.text = "\(tax)"
+                textField.text = String(format: "%.2f", tax)
             }
         }
         alert.addAction(UIAlertAction(title: title, style: .default, handler: { (action: UIAlertAction) in
-            let state = state ?? State(context: self.context)
-            state.title = alert.textFields?[0].text
-            state.tax = Double(alert.textFields![1].text!)!
+            let state = self.state ?? State(context: self.context)
+            var errorMessage = ""
+            if let title = self.alert.textFields?.first?.text, title.count > 0 {
+                state.title = title
+            }
+            else {
+                errorMessage += "Sem nome \n"
+            }
+            
+            if let strTax = self.alert.textFields?.last?.text, let tax = Double(strTax) {
+                state.tax = tax
+            }
+            else {
+                errorMessage += "Sem Taxa"
+            }
+            
+            if errorMessage.count > 1 {
+                print(errorMessage)
+                self.context.delete(state)
+                self.state = nil
+            }
+            
             do {
                 try self.context.save()
                 self.loadStates()
@@ -85,86 +174,82 @@ class StatesViewController: UIViewController {
                 print(error.localizedDescription)
             }
         }))
+        if let firstAction = alert.actions.first {
+            firstAction.isEnabled = false
+        }
         alert.addAction(UIAlertAction(title: "Cancelar", style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
     }
     
-    // MARK: - IBActions
-//    @IBAction func close(_ sender: UIBarButtonItem) {
-//        dismiss(animated: true, completion: nil)
-//    }
     
+    // MARK: - IBActions
     @IBAction func addState(_ sender: UIButton) {
-        showAlert(type: .add, state: nil)
+        showDialog(type: .add, state: nil)
     }
-//    @IBAction func add(_ sender: UIBarButtonItem) {
-//
-//    }
 }
 
 
-// MARK: - UITableViewDelegate
+extension StatesViewController: NSFetchedResultsControllerDelegate {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        print("change")
+        tableView.reloadData()
+    }
+}
+
 extension StatesViewController: UITableViewDelegate {
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let state = dataSource[indexPath.row]
-        let cell = tableView.cellForRow(at: indexPath)!
-        if cell.accessoryType == .none {
-            cell.accessoryType = .checkmark
-            product.addToStates(state)
-        } else {
-            cell.accessoryType = .none
-            product.removeFromStates(state)
-        }
-        tableView.deselectRow(at: indexPath, animated: false)
+        let state = self.fetchedResultController.object(at: indexPath)
+        tableView.setEditing(false, animated: true)
+        self.showDialog(type: .edit, state: state)
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let deleteAction = UITableViewRowAction(style: .destructive, title: "Excluir") { (action: UITableViewRowAction, indexPath: IndexPath) in
-            let state = self.dataSource[indexPath.row]
+            let state = self.fetchedResultController.object(at: indexPath)
             self.context.delete(state)
-            try! self.context.save()
-            self.dataSource.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
+            do {
+                try self.context.save()
+                self.loadStates()
+            } catch {
+                print(error.localizedDescription)
+            }
         }
         
-        let editAction = UITableViewRowAction(style: .normal, title: "Editar") { (action: UITableViewRowAction, indexPath: IndexPath) in
-            let state = self.dataSource[indexPath.row]
-            tableView.setEditing(false, animated: true)
-            self.showAlert(type: .edit, state: state)
-        }
-        editAction.backgroundColor = .blue
-        return [editAction, deleteAction]
+        //        let editAction = UITableViewRowAction(style: .normal, title: "Editar") { (action: UITableViewRowAction, indexPath: IndexPath) in
+        //            let state = self.fetchedResultController.object(at: indexPath)
+        //            tableView.setEditing(false, animated: true)
+        //            self.showDialog(type: .edit, state: state)
+        //        }
+        //        editAction.backgroundColor = .blue
+        return [deleteAction]
     }
 }
 
-// MARK: - UITableViewDelegate
 extension StatesViewController: UITableViewDataSource {
-    
-    //Método que define a quantidade de seções de uma tableView
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataSource.count
-//        if let count = fetchedResultController.fetchedObjects?.count {
-//            tableView.backgroundView = (count == 0) ? label : nil
-//            tableView.separatorStyle = .none
-//            return count
-//        } else {
-//            tableView.backgroundView = label
-//            return 0
-//        }
+        if let count = fetchedResultController.fetchedObjects?.count {
+            tableView.backgroundView = (count == 0) ? label : nil
+            return count
+        } else {
+            tableView.backgroundView = label
+            return 0
+        }
+    }
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        let state = dataSource[indexPath.row]
-        cell.textLabel?.text = state.title
-        cell.accessoryType = .none
-        if product != nil {
-            if let states = product.states, states.contains(state) {
-                cell.accessoryType = .checkmark
-            }
+        let cell: StateTableViewCell = tableView.dequeueReusableCell(withIdentifier: tableCellIdentifier, for: indexPath) as! StateTableViewCell
+        
+        let state = fetchedResultController.object(at: indexPath)
+        
+        if let title = state.title {
+            cell.lbStateTitle.text = title
         }
+        
+        cell.lbStateTax.text = String(format: "%.2F", state.tax)
+        
         return cell
     }
 }
-

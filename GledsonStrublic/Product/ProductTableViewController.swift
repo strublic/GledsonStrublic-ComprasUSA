@@ -24,28 +24,14 @@ class ProductsTableViewController: UITableViewController {
         label.textColor = .darkGray
         loadProducts()
     }
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        if let vc = segue.destination as? ProductViewController {
-//            vc.product = fetchedResultController.object(at: tableView.indexPathForSelectedRow!)
-//        }
-//    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        backgroundMusicPlayer.play()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-//        backgroundMusicPlayer.stop()
     }
-    
-//    func prepareMusic() {
-//        let url = Bundle.main.url(forResource: "music", withExtension: "mp3")!
-//        backgroundMusicPlayer = try! AVAudioPlayer(contentsOf: url)
-//        backgroundMusicPlayer.volume = 0.2
-//        backgroundMusicPlayer.numberOfLoops = -1
-//    }
     
     func loadProducts() {
         let fetchRequest: NSFetchRequest<Product> = Product.fetchRequest()

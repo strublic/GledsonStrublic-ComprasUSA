@@ -6,19 +6,8 @@
 	<string>Preciso de permissão para usar a camera</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Preciso de permissão para acessar suas fotos</string>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-	</dict>
-	<key>LSApplicationCategoryType</key>
-	<string></string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>location</string>
-	</array>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>en</string>
+	<string>en_US</string>
 	<key>CFBundleDisplayName</key>
 	<string>ComprasUSA</string>
 	<key>CFBundleExecutable</key>

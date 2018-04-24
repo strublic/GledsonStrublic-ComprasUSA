@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 48;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3E257A06208F503C00616302 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 3E257A05208F503B00616302 /* Settings.bundle */; };
 		3E72A621208790AD00234FD0 /* ProductTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E72A620208790AD00234FD0 /* ProductTableViewController.swift */; };
 		3E72A62420879C5B00234FD0 /* StatesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E72A62320879C5B00234FD0 /* StatesViewController.swift */; };
 		3E72A62620879F5400234FD0 /* ProductRegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E72A62520879F5400234FD0 /* ProductRegisterViewController.swift */; };
@@ -18,9 +19,11 @@
 		3E74F6F9208665DE001A804A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E74F6F8208665DE001A804A /* Assets.xcassets */; };
 		3E74F6FC208665DE001A804A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3E74F6FA208665DE001A804A /* LaunchScreen.storyboard */; };
 		3E7EFFA0208A0C360064C166 /* ProductViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7EFF9F208A0C360064C166 /* ProductViewController.swift */; };
+		3ED7B65E208E80AE0054E2CA /* StateTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED7B65D208E80AE0054E2CA /* StateTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3E257A05208F503B00616302 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		3E72A620208790AD00234FD0 /* ProductTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTableViewController.swift; sourceTree = "<group>"; };
 		3E72A62320879C5B00234FD0 /* StatesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatesViewController.swift; sourceTree = "<group>"; };
 		3E72A62520879F5400234FD0 /* ProductRegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductRegisterViewController.swift; sourceTree = "<group>"; };
@@ -34,6 +37,7 @@
 		3E74F6FB208665DE001A804A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3E74F6FD208665DE001A804A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3E7EFF9F208A0C360064C166 /* ProductViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductViewController.swift; sourceTree = "<group>"; };
+		3ED7B65D208E80AE0054E2CA /* StateTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +66,7 @@
 			isa = PBXGroup;
 			children = (
 				3E72A62320879C5B00234FD0 /* StatesViewController.swift */,
+				3ED7B65D208E80AE0054E2CA /* StateTableViewCell.swift */,
 			);
 			path = State;
 			sourceTree = "<group>";
@@ -102,6 +107,7 @@
 				3E74F6F8208665DE001A804A /* Assets.xcassets */,
 				3E74F6FA208665DE001A804A /* LaunchScreen.storyboard */,
 				3E74F6FD208665DE001A804A /* Info.plist */,
+				3E257A05208F503B00616302 /* Settings.bundle */,
 			);
 			path = GledsonStrublic;
 			sourceTree = "<group>";
@@ -138,11 +144,12 @@
 				TargetAttributes = {
 					3E74F6ED208665DA001A804A = {
 						CreatedOnToolsVersion = 9.3;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
 			buildConfigurationList = 3E74F6E9208665DA001A804A /* Build configuration list for PBXProject "GledsonStrublic" */;
-			compatibilityVersion = "Xcode 9.3";
+			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -164,6 +171,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3E257A06208F503C00616302 /* Settings.bundle in Resources */,
 				3E74F6FC208665DE001A804A /* LaunchScreen.storyboard in Resources */,
 				3E74F6F9208665DE001A804A /* Assets.xcassets in Resources */,
 				3E74F6F7208665DA001A804A /* Main.storyboard in Resources */,
@@ -181,6 +189,7 @@
 				3E72A62620879F5400234FD0 /* ProductRegisterViewController.swift in Sources */,
 				3E72A6302087D77D00234FD0 /* ProductTableViewCell.swift in Sources */,
 				3E72A621208790AD00234FD0 /* ProductTableViewController.swift in Sources */,
+				3ED7B65E208E80AE0054E2CA /* StateTableViewCell.swift in Sources */,
 				3E72A62C2087CDD700234FD0 /* UIViewController+CoreData.swift in Sources */,
 				3E74F6F2208665DA001A804A /* AppDelegate.swift in Sources */,
 				3E7EFFA0208A0C360064C166 /* ProductViewController.swift in Sources */,
@@ -318,8 +327,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -330,10 +338,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = GledsonStrublic/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = FIAP.GledsonStrublic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -347,10 +353,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = GledsonStrublic/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = FIAP.GledsonStrublic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
