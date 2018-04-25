@@ -27,14 +27,8 @@ class StatesViewController: UIViewController {
     var state: State!
     var alert: UIAlertController!
     
-//    var label = UILabel(frame: CGRect(x: 0, y: 0, width: 200, height: 22))
-//    var fetchedResultController: NSFetchedResultsController<State>!
-//    var dataSource: [State] = []
-//    var product: Product!
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        //tableView.register(StateItemTableViewCell.self, forCellReuseIdentifier: tableCellIdentifier)
         tableView.delegate = self
         tableView.dataSource = self
         
@@ -92,27 +86,17 @@ class StatesViewController: UIViewController {
         if let fields = alert.textFields {
             for field in fields {
                 if let placeHolder = field.placeholder {
-                    if placeHolder.range(of: "Nome") != nil {
-                        
+                    if placeHolder.range(of: "Estado") != nil {
                         if let text = field.text, text.count > 1 {
-                            
                             allValid = allValid && true
-                            
                         } else {
-                            
                             allValid = false
-                            
                         }
                     } else if placeHolder.range(of: "Imposto") != nil {
-                        
                         if let text = field.text, let dValue = Double(text), dValue >= 0.0 {
-                            
                             allValid = allValid && true
-                            
                         } else {
-                            
                             allValid = false
-                            
                         }
                     }
                 }
@@ -130,7 +114,7 @@ class StatesViewController: UIViewController {
         alert = UIAlertController(title: "\(title) estado", message: nil, preferredStyle: .alert)
         
         alert.addTextField { (textField: UITextField) in
-            textField.placeholder = "Nome do estado"
+            textField.placeholder = "Estado"
             textField.addTarget(self, action: #selector(self.stateTextChange), for: .editingChanged)
             if let title = state?.title {
                 textField.text = title
@@ -145,20 +129,20 @@ class StatesViewController: UIViewController {
             }
         }
         alert.addAction(UIAlertAction(title: title, style: .default, handler: { (action: UIAlertAction) in
-            let state = self.state ?? State(context: self.context)
+            let state = state ?? State(context: self.context)
             var errorMessage = ""
             if let title = self.alert.textFields?.first?.text, title.count > 0 {
                 state.title = title
             }
             else {
-                errorMessage += "Sem nome \n"
+                errorMessage += "Sem estado \n"
             }
             
             if let strTax = self.alert.textFields?.last?.text, let tax = Double(strTax) {
                 state.tax = tax
             }
             else {
-                errorMessage += "Sem Taxa"
+                errorMessage += "Sem taxa"
             }
             
             if errorMessage.count > 1 {
@@ -191,7 +175,6 @@ class StatesViewController: UIViewController {
 
 extension StatesViewController: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        print("change")
         tableView.reloadData()
     }
 }
@@ -214,13 +197,6 @@ extension StatesViewController: UITableViewDelegate {
                 print(error.localizedDescription)
             }
         }
-        
-        //        let editAction = UITableViewRowAction(style: .normal, title: "Editar") { (action: UITableViewRowAction, indexPath: IndexPath) in
-        //            let state = self.fetchedResultController.object(at: indexPath)
-        //            tableView.setEditing(false, animated: true)
-        //            self.showDialog(type: .edit, state: state)
-        //        }
-        //        editAction.backgroundColor = .blue
         return [deleteAction]
     }
 }
@@ -235,19 +211,17 @@ extension StatesViewController: UITableViewDataSource {
             return 0
         }
     }
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: StateTableViewCell = tableView.dequeueReusableCell(withIdentifier: tableCellIdentifier, for: indexPath) as! StateTableViewCell
-        
         let state = fetchedResultController.object(at: indexPath)
-        
         if let title = state.title {
             cell.lbStateTitle.text = title
         }
-        
         cell.lbStateTax.text = String(format: "%.2F", state.tax)
         
         return cell

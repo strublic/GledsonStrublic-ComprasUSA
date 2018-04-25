@@ -19,6 +19,7 @@
 		3E74F6F9208665DE001A804A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E74F6F8208665DE001A804A /* Assets.xcassets */; };
 		3E74F6FC208665DE001A804A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3E74F6FA208665DE001A804A /* LaunchScreen.storyboard */; };
 		3E7EFFA0208A0C360064C166 /* ProductViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7EFF9F208A0C360064C166 /* ProductViewController.swift */; };
+		3E82DBA72090ADA500DFAD25 /* BillViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E82DBA62090ADA500DFAD25 /* BillViewController.swift */; };
 		3ED7B65E208E80AE0054E2CA /* StateTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED7B65D208E80AE0054E2CA /* StateTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
@@ -37,6 +38,7 @@
 		3E74F6FB208665DE001A804A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3E74F6FD208665DE001A804A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3E7EFF9F208A0C360064C166 /* ProductViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductViewController.swift; sourceTree = "<group>"; };
+		3E82DBA62090ADA500DFAD25 /* BillViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillViewController.swift; sourceTree = "<group>"; };
 		3ED7B65D208E80AE0054E2CA /* StateTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -102,6 +104,7 @@
 				3E72A62220879C3C00234FD0 /* State */,
 				3E72A61F2087907100234FD0 /* Product */,
 				3E74F6F1208665DA001A804A /* AppDelegate.swift */,
+				3E82DBA62090ADA500DFAD25 /* BillViewController.swift */,
 				3E72A6272087A9AF00234FD0 /* ProductsLib.xcdatamodeld */,
 				3E74F6F5208665DA001A804A /* Main.storyboard */,
 				3E74F6F8208665DE001A804A /* Assets.xcassets */,
@@ -192,6 +195,7 @@
 				3ED7B65E208E80AE0054E2CA /* StateTableViewCell.swift in Sources */,
 				3E72A62C2087CDD700234FD0 /* UIViewController+CoreData.swift in Sources */,
 				3E74F6F2208665DA001A804A /* AppDelegate.swift in Sources */,
+				3E82DBA72090ADA500DFAD25 /* BillViewController.swift in Sources */,
 				3E7EFFA0208A0C360064C166 /* ProductViewController.swift in Sources */,
 				3E72A6292087A9AF00234FD0 /* ProductsLib.xcdatamodeld in Sources */,
 			);

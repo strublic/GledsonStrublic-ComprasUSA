@@ -161,7 +161,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Icon" translatesAutoresizingMaskIntoConstraints="NO" id="EoC-w8-PUu">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="upload-file-icon" translatesAutoresizingMaskIntoConstraints="NO" id="EoC-w8-PUu">
                                 <rect key="frame" x="20" y="139" width="335" height="165"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="165" id="fDk-wz-DhN"/>
@@ -375,7 +375,7 @@
         <!--Total da Compra-->
         <scene sceneID="Ko9-Hf-Ora">
             <objects>
-                <viewController id="Rtn-4w-DY3" sceneMemberID="viewController">
+                <viewController id="Rtn-4w-DY3" customClass="BillViewController" customModule="GledsonStrublic" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="WmT-ll-bix"/>
                         <viewControllerLayoutGuide type="bottom" id="Fuu-iW-MZN"/>
@@ -390,8 +390,8 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1138.266" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7eK-Hk-KmY">
-                                <rect key="frame" x="125" y="111" width="125.5" height="36"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0.0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7eK-Hk-KmY">
+                                <rect key="frame" x="165.5" y="111" width="45" height="36"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                 <color key="textColor" red="0.86831623315811157" green="0.25369822978973389" blue="0.17041036486625671" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -402,8 +402,8 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="3642.4512" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uVW-Zm-iG0">
-                                <rect key="frame" x="113.5" y="268" width="148" height="36"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0.0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uVW-Zm-iG0">
+                                <rect key="frame" x="165" y="268" width="45" height="36"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                 <color key="textColor" red="0.3844793438911438" green="0.79479879140853882" blue="0.1609731912612915" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
@@ -425,6 +425,10 @@
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Total da Compra" image="Icon-total" selectedImage="Icon-total" id="02E-ha-Y8l"/>
+                    <connections>
+                        <outlet property="lbTotalBR" destination="uVW-Zm-iG0" id="4iq-EN-vGx"/>
+                        <outlet property="lbTotalUS" destination="7eK-Hk-KmY" id="yXR-bf-0IQ"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="O9l-ew-Kkr" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -471,10 +475,10 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Icon" width="57" height="57"/>
         <image name="Icon-cart" width="29" height="29"/>
         <image name="Icon-settings" width="22" height="22"/>
         <image name="Icon-total" width="29" height="29"/>
+        <image name="upload-file-icon" width="256" height="256"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="Y7R-99-cVj"/>
