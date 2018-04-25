@@ -72,7 +72,7 @@ class ProductsTableViewController: UITableViewController {
         cell.lbPrice.text = "\(product.price)"
         cell.lbTitle.text = product.title
         cell.lbCard.text = product.card ? "Com Cartão" : "Sem Cartão"
-        cell.lbTitle.text = product.title
+        cell.lbState.text = product.state?.title
         if let image = product.picture as? UIImage {
            cell.ivPicture.image = image
         } else {

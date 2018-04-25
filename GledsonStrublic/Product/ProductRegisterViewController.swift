@@ -6,7 +6,6 @@
 //  Copyright © 2018 Mobile2you. All rights reserved.
 //
 
-import Foundation
 import UIKit
 import CoreData
 
@@ -17,6 +16,7 @@ class ProductRegisterViewController: UIViewController {
     @IBOutlet weak var tfPrice: UITextField!
     @IBOutlet weak var tfState: UITextField!
     @IBOutlet weak var btAddUpdate: UIButton!
+    @IBOutlet weak var spCard: UISwitch!
     
     // MARK: - Properties
     var product: Product!
@@ -26,13 +26,20 @@ class ProductRegisterViewController: UIViewController {
     var fetchedResultController: NSFetchedResultsController<State>!
     var dataSource: [String]!
     
+    var currentState: State!
+    
     // MARK:  Super Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         if product != nil {
             tfTitle.text = product.title
-            tfPrice.text = "\(product.price)"
             btAddUpdate.setTitle("Atualizar", for: .normal)
+            if let image = product.picture as? UIImage {
+                ivPicture.image = image
+            }
+            
+            tfPrice.text = String(format: "%.2f", product.price)
+            spCard.isOn = product.card
             if let image = product.picture as? UIImage {
                 ivPicture.image = image
             }
@@ -64,7 +71,7 @@ class ProductRegisterViewController: UIViewController {
         fetchedResultController.delegate = self
         do {
             try fetchedResultController.performFetch()
-            dataSource = fetchedResultController.fetchedObjects?.map({$0.title!})
+//            dataSource = fetchedResultController.fetchedObjects?.map({$0.title!})
         } catch {
             print(error.localizedDescription)
         }
@@ -85,32 +92,51 @@ class ProductRegisterViewController: UIViewController {
 
     // MARK: - IBActions
     @IBAction func addPicture(_ sender: UIButton) {
-        //Criando o alerta que será apresentado ao usuário
         let alert = UIAlertController(title: "Selecionar uma imagem", message: "De onde você quer escolher a imagem?", preferredStyle: .actionSheet)
-
-        //Verificamos se o device possui câmera. Se sim, adicionamos a devida UIAlertAction
+        
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
             let cameraAction = UIAlertAction(title: "Câmera", style: .default, handler: { (action: UIAlertAction) in
-                self.selectPicture(sourceType: .camera)
+                self.setNewImage(sourceType: .camera)
             })
             alert.addAction(cameraAction)
         }
-
-        //As UIAlertActions de Biblioteca de fotos e Álbum de fotos também são criadas e adicionadas
+        
         let libraryAction = UIAlertAction(title: "Biblioteca de fotos", style: .default) { (action: UIAlertAction) in
-            self.selectPicture(sourceType: .photoLibrary)
+            self.setNewImage(sourceType: .photoLibrary)
         }
         alert.addAction(libraryAction)
-
-        let photosAction = UIAlertAction(title: "Álbum de fotos", style: .default) { (action: UIAlertAction) in
-            self.selectPicture(sourceType: .savedPhotosAlbum)
-        }
-        alert.addAction(photosAction)
-
+        
         let cancelAction = UIAlertAction(title: "Cancelar", style: .cancel, handler: nil)
         alert.addAction(cancelAction)
-
+        
         present(alert, animated: true, completion: nil)
+        
+        //Criando o alerta que será apresentado ao usuário
+//        let alert = UIAlertController(title: "Selecionar uma imagem", message: "De onde você quer escolher a imagem?", preferredStyle: .actionSheet)
+//
+//        //Verificamos se o device possui câmera. Se sim, adicionamos a devida UIAlertAction
+//        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+//            let cameraAction = UIAlertAction(title: "Câmera", style: .default, handler: { (action: UIAlertAction) in
+//                self.selectPicture(sourceType: .camera)
+//            })
+//            alert.addAction(cameraAction)
+//        }
+//
+//        //As UIAlertActions de Biblioteca de fotos e Álbum de fotos também são criadas e adicionadas
+//        let libraryAction = UIAlertAction(title: "Biblioteca de fotos", style: .default) { (action: UIAlertAction) in
+//            self.selectPicture(sourceType: .photoLibrary)
+//        }
+//        alert.addAction(libraryAction)
+//
+//        let photosAction = UIAlertAction(title: "Álbum de fotos", style: .default) { (action: UIAlertAction) in
+//            self.selectPicture(sourceType: .savedPhotosAlbum)
+//        }
+//        alert.addAction(photosAction)
+//
+//        let cancelAction = UIAlertAction(title: "Cancelar", style: .cancel, handler: nil)
+//        alert.addAction(cancelAction)
+//
+//        present(alert, animated: true, completion: nil)
     }
 
     @IBAction func close(_ sender: UIButton?) {
@@ -122,21 +148,66 @@ class ProductRegisterViewController: UIViewController {
 
     @IBAction func addUpdateProduct(_ sender: UIButton) {
         print("Salvando produto")
-        if product == nil {
-            product = Product(context: context)
+        product = product ?? Product(context: context)
+        var errorMessage: String = ""
+        
+        if let title = tfTitle.text, title.count > 0 {
+            product.title = title
         }
-        product.title = tfTitle.text!
-        product.price = Double(tfPrice.text!)!
+        else {
+            errorMessage += "Digite o título do produto \n"
+        }
+        
+        if let value = tfPrice.text, let dValue = Double(value), dValue >= 0 {
+            product.price = dValue
+        }
+        else {
+            errorMessage += "Digite o preço do produto \n"
+        }
+        
+        product.card = spCard.isOn
+        if currentState != nil {
+            product.state = currentState
+        }
+        else {
+            errorMessage += "Escolha um estado \n"
+        }
+        
         if smallImage != nil {
             product.picture = smallImage
         }
+        else {
+            errorMessage += "Escolha uma imagem"
+        }
+        
+        if errorMessage.count > 1 {
+            let alert = UIAlertController(title: "Atenção", message: errorMessage, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+            present(alert, animated: true, completion: nil)
+            context.undo()
+            return
+        }
+        
         do {
             try context.save()
+            dismiss(animated: true, completion: nil)
+            navigationController?.popViewController(animated: true)
         } catch {
             print(error.localizedDescription)
         }
-        close(nil)
+        
         print("Produto salvo")
+    }
+    
+    func setNewImage(sourceType: UIImagePickerControllerSourceType)
+    {
+        let imagePicker = UIImagePickerController()
+        
+        imagePicker.sourceType = sourceType
+        
+        imagePicker.delegate = self
+        
+        present(imagePicker, animated: true, completion: nil)
     }
 
     // MARK:  Methods
@@ -156,7 +227,6 @@ class ProductRegisterViewController: UIViewController {
     
     //O método cancel irá esconder o teclado e não irá atribuir a seleção ao textField
     @objc func cancel() {
-        
         //O método resignFirstResponder() faz com que o campo deixe de ter o foco, fazendo assim
         //com que o teclado (pickerView) desapareça da tela
         tfState.resignFirstResponder()
@@ -167,35 +237,27 @@ class ProductRegisterViewController: UIViewController {
         
         //Abaixo, recuperamos a linha selecionada na coluna (component) 0 (temos apenas um component
         //em nosso pickerView)
-        tfState.text = dataSource[pickerView.selectedRow(inComponent: 0)]
+        currentState = fetchedResultController.object(at: IndexPath(row: pickerView.selectedRow(inComponent: 0), section: 0))
+        tfState.text = currentState.title
         cancel()
     }
 }
 
-// MARK: - UIImagePickerControllerDelegate
-extension ProductRegisterViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    
-    //O método abaixo nos trará a imagem selecionada pelo usuário em seu tamanho original
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String: AnyObject]?) {
-        
-        //Iremos usar o código abaixo para criar uma versão reduzida da imagem escolhida pelo usuário
-        let smallSize = CGSize(width: 300, height: 280)
-        UIGraphicsBeginImageContext(smallSize)
-        image.draw(in: CGRect(x: 0, y: 0, width: smallSize.width, height: smallSize.height))
-        
-        //Atribuímos a versão reduzida da imagem à variável smallImage
-        smallImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        ivPicture.image = smallImage //Atribuindo a imagem à ivPoster
-        
-        //Aqui efetuamos o dismiss na UIImagePickerController, para retornar à tela anterior
-        dismiss(animated: true, completion: nil)
+// MARK: - NSFetchedResultsControllerDelegate
+extension ProductRegisterViewController: NSFetchedResultsControllerDelegate {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        pickerView.reloadComponent(0)
     }
 }
+
 extension ProductRegisterViewController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return dataSource[row]
+        let path = IndexPath(row: row, section: 0)
+        let state:State = fetchedResultController.object(at: path)
+        if let title = state.title {
+            return title
+        }
+        return ""
     }
 }
 
@@ -205,14 +267,76 @@ extension ProductRegisterViewController: UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return dataSource.count
+        if let count = fetchedResultController.fetchedObjects?.count {
+            return count
+        } else {
+            return 0
+        }
     }
 }
 
-// MARK: - NSFetchedResultsControllerDelegate
-extension ProductRegisterViewController: NSFetchedResultsControllerDelegate {
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        dataSource = fetchedResultController.fetchedObjects?.map({$0.title!})
-        pickerView.reloadComponent(0)
+// MARK: - UIImagePickerControllerDelegate
+extension ProductRegisterViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    @objc func imagePickerController(_ picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String: AnyObject]?){
+        let smallSize = CGSize(width: 300, height: 280)
+        UIGraphicsBeginImageContext(smallSize)
+        image.draw(in: CGRect(x: 0, y: 0, width: smallSize.width, height: smallSize.height))
+        smallImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        ivPicture.image = smallImage
+        
+        dismiss(animated: true, completion: nil)
     }
 }
+
+
+
+
+
+
+
+// MARK: - UIImagePickerControllerDelegate
+//extension ProductRegisterViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+//
+//    //O método abaixo nos trará a imagem selecionada pelo usuário em seu tamanho original
+//    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingImage image: UIImage, editingInfo: [String: AnyObject]?) {
+//
+//        //Iremos usar o código abaixo para criar uma versão reduzida da imagem escolhida pelo usuário
+//        let smallSize = CGSize(width: 300, height: 280)
+//        UIGraphicsBeginImageContext(smallSize)
+//        image.draw(in: CGRect(x: 0, y: 0, width: smallSize.width, height: smallSize.height))
+//
+//        //Atribuímos a versão reduzida da imagem à variável smallImage
+//        smallImage = UIGraphicsGetImageFromCurrentImageContext()
+//        UIGraphicsEndImageContext()
+//
+//        ivPicture.image = smallImage //Atribuindo a imagem à ivPoster
+//
+//        //Aqui efetuamos o dismiss na UIImagePickerController, para retornar à tela anterior
+//        dismiss(animated: true, completion: nil)
+//    }
+//}
+//extension ProductRegisterViewController: UIPickerViewDelegate {
+//    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+//        return dataSource[row]
+//    }
+//}
+
+//extension ProductRegisterViewController: UIPickerViewDataSource {
+//    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+//        return 1
+//    }
+//
+//    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+//        return dataSource.count
+//    }
+//}
+
+// MARK: - NSFetchedResultsControllerDelegate
+//extension ProductRegisterViewController: NSFetchedResultsControllerDelegate {
+//    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+//        dataSource = fetchedResultController.fetchedObjects?.map({$0.title!})
+//        pickerView.reloadComponent(0)
+//    }
+//}
