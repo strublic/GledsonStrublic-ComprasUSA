@@ -96,9 +96,9 @@ class ProductsTableViewController: UITableViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let vc = segue.destination as? ProductRegisterViewController {
-            if (vc == nil) {
+            if (tableView.indexPathForSelectedRow != nil){
                 vc.product = fetchedResultController.object(at: tableView.indexPathForSelectedRow!)
-            }
+           }
         }
     }
 }
