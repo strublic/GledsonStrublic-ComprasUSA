@@ -20,6 +20,11 @@ class BillViewController: UIViewController {
         load()
     }
     
+    //Faz o calculo depois que as taxas sao salvas na tla de ajustes
+    override func viewDidAppear(_ animated: Bool) {
+        load()
+    }
+    
     func load() {
         let fetchRequest: NSFetchRequest<Product> = Product.fetchRequest()
         
@@ -47,9 +52,12 @@ class BillViewController: UIViewController {
             
             for product in objects {
                 var total = product.price
+                //Total do dolar
                 dolarTotal += product.price
+                //
                 if let state = product.state, state.tax != 0 {
                     total *= ((state.tax / 100) + 1)
+                    
                 }
                 if product.card && iof != 0 {
                     total *= ((iof / 100) + 1)

@@ -46,6 +46,18 @@ class StatesViewController: UIViewController {
         tfIOF.text = String(format: "%.2f", UserDefaults.standard.double(forKey: "iof"))
     }
     
+    //Sai da tela das taxas
+//    override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillDisappear(animated)
+//        if let value = tfDolar.text, let dValue = Double(value), dValue > 0 {
+//            UserDefaults.standard.set(dValue, forKey: "dolar")
+//        }
+//        if let value = tfIOF.text, let dValue = Double(value), dValue >= 0 {
+//            UserDefaults.standard.set(dValue, forKey: "iof")
+//        }
+//    }
+    
+    
     @IBAction func dollarChanged(_ sender: UITextField) {
         if let value = tfDolar.text, let dValue = Double(value), dValue > 0 {
             UserDefaults.standard.set(dValue, forKey: "dolar")
