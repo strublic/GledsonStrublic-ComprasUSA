@@ -44,6 +44,7 @@ class BillViewController: UIViewController {
             var dResult = 0.0;
             let dolar = UserDefaults.standard.double(forKey: "dolar")
             let iof = UserDefaults.standard.double(forKey: "iof")
+            
             for product in objects {
                 var total = product.price
                 dolarTotal += product.price

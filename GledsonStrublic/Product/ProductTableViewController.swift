@@ -65,6 +65,7 @@ class ProductsTableViewController: UITableViewController {
         }
     }
     
+    
     //Método que define a célula que será apresentada em cada linha
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "productCell", for: indexPath) as! ProductTableViewCell
@@ -83,12 +84,20 @@ class ProductsTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            let movie = fetchedResultController.object(at: indexPath)
-            context.delete(movie)
+            let product = fetchedResultController.object(at: indexPath)
+            context.delete(product)
             do {
                 try context.save()
             } catch {
                 print(error.localizedDescription)
+            }
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let vc = segue.destination as? ProductRegisterViewController {
+            if (vc == nil) {
+                vc.product = fetchedResultController.object(at: tableView.indexPathForSelectedRow!)
             }
         }
     }
@@ -99,5 +108,6 @@ extension ProductsTableViewController: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         tableView.reloadData()
     }
+    
 }
 

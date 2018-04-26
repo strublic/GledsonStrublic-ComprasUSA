@@ -33,16 +33,17 @@ class ProductRegisterViewController: UIViewController {
         super.viewDidLoad()
         if product != nil {
             tfTitle.text = product.title
-            btAddUpdate.setTitle("Atualizar", for: .normal)
-            if let image = product.picture as? UIImage {
-                ivPicture.image = image
-            }
-            
+            currentState = product.state
+            tfState.text = currentState?.title
             tfPrice.text = String(format: "%.2f", product.price)
             spCard.isOn = product.card
+            
             if let image = product.picture as? UIImage {
                 ivPicture.image = image
+                smallImage = image
             }
+            
+            btAddUpdate.setTitle("Atualizar", for: .normal)
         }
         
         pickerView = UIPickerView()
